@@ -1,0 +1,57 @@
+{
+    "rust-analyzer.checkOnSave.command": "clippy",
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "codeLens.enable": true,
+    "diagnostic.virtualText": true,
+
+    "languageserver": {
+        "coc-clangd": {
+            "command": "clangd",
+            "rootPatterns": [
+                "compile_flags.txt",
+                "compile_commands.json"
+            ],
+            "filetypes": [
+                "c",
+                "cc",
+                "cpp",
+                "c++",
+                "objc",
+                "objcpp"
+            ],
+            "initializationOptions": {
+                "index": {
+                    "onChange": true
+                },
+                "highlight": {
+                    "lsRanges": true
+                },
+                "clang": {
+                    "resourceDir": "/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0",
+                    "extraArgs": [
+                        "-isystem",
+                        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1",
+                        "-isystem",
+                        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.0/include",
+                        "-isystem",
+                        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include",
+                        "-isystem",
+                        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
+                    ]
+                }
+            }
+        },
+        "cmake": {
+            "command": "cmake-language-server",
+            "filetypes": [
+                "cmake"
+            ],
+            "rootPatterns": [
+                "build/"
+            ],
+            "initializationOptions": {
+                "buildDirectory": "build"
+            }
+        }
+    }
+}
