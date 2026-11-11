@@ -48,7 +48,7 @@ the toolchain still starts cleanly. Check what attached with `:checkhealth vim.l
 | Slang, HLSL | `slang` `hlsl` | `slangd` | `bin/slangd` from a [Slang release](https://github.com/shader-slang/slang/releases) |
 | GLSL | `glsl` | `glsl_analyzer` | [release](https://github.com/nolanderc/glsl_analyzer/releases) |
 | WGSL | `wgsl` | `wgsl-analyzer` | `brew install wgsl-analyzer` or a [release](https://github.com/wgsl-analyzer/wgsl-analyzer/releases) |
-| Metal | `cpp` parser | none; `gd` greps with fff | |
+| Metal | `cpp` parser | none; `gd` greps the word with fff | |
 
 If `cargo` isn't on `PATH`, `~/.cargo/bin` (or `$CARGO_HOME/bin`) is appended to
 Neovim's own `PATH`, which covers rustup installs made with `--no-modify-path`.
@@ -101,7 +101,7 @@ Leader is <kbd>Space</kbd>.
 | `<leader>b` | `:buffer ` with fuzzy completion |
 | `<leader>s` | Workspace symbols (LSP) |
 | `<leader>h` | Switch header/source (clangd) |
-| `gd` / `gD` | Definition / declaration; `gd` greps when the buffer has no server |
+| `gd` / `gD` | Definition / declaration; `gd` greps the word when no server finds a definition (Metal, HLSL slangd can't parse) |
 | `<C-]>` / `<C-t>` | Definition through the tag stack / jump back |
 | `K` | Hover |
 | `grr` `gri` `grt` | References, implementations, type definition |

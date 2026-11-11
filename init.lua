@@ -288,10 +288,29 @@ map('n', '<leader>d', fff('live_grep', { grep = { modes = { 'definition_only', '
 map('n', '<leader>b', ':buffer ', { desc = 'Switch buffer' })
 map('n', '<leader>s', vim.lsp.buf.workspace_symbol, { desc = 'Workspace symbols' })
 map('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' })
+-- Grep for the word when no server knows the definition: Metal has no server, and
+-- slangd cannot parse some HLSL (C++-style templates).
 map('n', 'gd', function()
-  if #vim.lsp.get_clients({ bufnr = 0, method = 'textDocument/definition' }) > 0 then
-    vim.lsp.buf.definition()
-  else
-    require('fff').live_grep_under_cursor() -- no server for this buffer (Metal, ...)
+  local word = vim.fn.expand('<cword>')
+  local grep = function()
+    require('fff').live_grep({ query = word })
   end
-end, { desc = 'Go to definition (grep without LSP)' })
+  local buf, win = vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win()
+  if #vim.lsp.get_clients({ bufnr = buf, method = 'textDocument/definition' }) == 0 then
+    return grep()
+  end
+  local pos = vim.api.nvim_win_get_cursor(win)
+  vim.lsp.buf_request_all(buf, 'textDocument/definition', function(client)
+    return vim.lsp.util.make_position_params(win, client.offset_encoding)
+  end, function(results)
+    if vim.api.nvim_get_current_win() ~= win or not vim.deep_equal(vim.api.nvim_win_get_cursor(win), pos) then
+      return -- the cursor moved on while the servers were busy
+    end
+    for _, res in pairs(results) do
+      if type(res.result) == 'table' and next(res.result) then
+        return vim.lsp.buf.definition() -- let Neovim jump (tag stack, quickfix for several)
+      end
+    end
+    grep()
+  end)
+end, { desc = 'Go to definition, else grep the word' })
