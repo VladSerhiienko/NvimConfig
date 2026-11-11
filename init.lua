@@ -40,6 +40,7 @@ o.wildoptions = 'pum,tagfile,fuzzy'
 o.completeopt = 'menuone,noselect,popup,fuzzy'
 o.pumheight = 15
 o.winborder = 'rounded'
+o.exrc = true -- project .nvim.lua files run only after `:trust`
 
 vim.diagnostic.config({ virtual_text = true, severity_sort = true })
 

@@ -71,9 +71,14 @@ Neovim's own `PATH`, which covers rustup installs made with `--no-modify-path`.
   `.slangh` is Slang, and `.mesh`/`.task` are GLSL.
 - Tree-sitter is skipped for files over 2 MB, which are usually generated.
 
-slangd resolves `#include` and `import` relative to the file and the workspace.
-Shaders that include SDK headers from elsewhere need search paths and macros,
-which slangd takes as LSP settings
+### Per-project settings
+
+`'exrc'` is on, so a `.nvim.lua` in the directory Neovim starts in (or any
+parent) runs at startup. Neovim asks before running one it hasn't seen, and again
+after every edit; review it and answer, or open it and run `:trust`. Use it for
+project-specific LSP settings. For example, slangd resolves `#include` and
+`import` only relative to the file and the workspace, so shaders that include
+SDK headers need search paths and macros
 ([options](https://github.com/shader-slang/slang-vscode-extension#configurations)):
 
 ```lua
