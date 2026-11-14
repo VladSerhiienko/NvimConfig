@@ -95,9 +95,21 @@ vim.pack.add({
   'https://github.com/neovim/nvim-lspconfig',
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
   'https://github.com/dmtrKovalenko/fff',
+  'https://github.com/nvim-mini/mini.icons',
 }, { confirm = false })
 
 pcall(vim.cmd.colorscheme, 'tokyonight-night')
+
+-- Nerd Font icons: fff's file list uses mini.icons when it is loaded, and the completion
+-- menu shows an icon before each item's kind.
+-- HLSL and Metal have no icon there; give them letters from the set used for GLSL/Slang/WGSL.
+require('mini.icons').setup({
+  filetype = {
+    hlsl = { glyph = vim.fn.nr2char(0xF0AF5), hl = 'MiniIconsPurple' },
+    metal = { glyph = vim.fn.nr2char(0xF0AFA), hl = 'MiniIconsRed' },
+  },
+})
+MiniIcons.tweak_lsp_kind()
 
 -- Tree-sitter -----------------------------------------------------------------
 
@@ -117,7 +129,10 @@ local missing = vim.tbl_filter(function(p)
   return not vim.list_contains(installed, p)
 end, parsers)
 if #missing > 0 and vim.fn.executable('tree-sitter') == 1 then
-  require('nvim-treesitter').install(missing)
+  local install = require('nvim-treesitter').install(missing)
+  if vim.list_contains(vim.v.argv, '--headless') then
+    install:wait(600000) -- so `nvim --headless +qa` finishes the whole setup
+  end
 end
 
 vim.api.nvim_create_autocmd('FileType', {
