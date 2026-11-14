@@ -5,6 +5,7 @@ and Codex next to them. The keys below were checked against tmux 3.8, Neovim
 0.12 and this repository's `init.lua` and `tmux.conf`.
 
 - [Notation](#notation)
+- [Linux, Windows and macOS](#linux-windows-and-macos)
 - [A working layout](#a-working-layout)
 - [tmux](#tmux): [sessions](#sessions), [windows](#windows), [panes](#panes),
   [floating panes](#floating-panes), [copy mode](#copy-mode-and-scrollback),
@@ -24,7 +25,7 @@ and Codex next to them. The keys below were checked against tmux 3.8, Neovim
 | Written | Press |
 | --- | --- |
 | `C-b c` (tmux) | <kbd>Ctrl</kbd>+<kbd>b</kbd>, release, then <kbd>c</kbd>. `C-b` is the tmux prefix. |
-| `C-b M-1` | Prefix, then <kbd>Alt</kbd>+<kbd>1</kbd> |
+| `C-b M-1` | Prefix, then <kbd>Alt</kbd>+<kbd>1</kbd> (<kbd>Option</kbd>+<kbd>1</kbd> on macOS) |
 | `<C-w>v` (Neovim) | <kbd>Ctrl</kbd>+<kbd>w</kbd>, then <kbd>v</kbd> |
 | `<leader>f` | <kbd>Space</kbd>, then <kbd>f</kbd> (leader is Space in this config) |
 | `<S-Tab>`, `<M-Enter>`, `<CR>` | <kbd>Shift</kbd>+<kbd>Tab</kbd>, <kbd>Alt</kbd>+<kbd>Enter</kbd>, <kbd>Enter</kbd> |
@@ -36,6 +37,91 @@ A count in front repeats most Neovim commands: `5j` moves five lines down,
 
 Inside tmux, a program never sees <kbd>Ctrl</kbd>+<kbd>b</kbd> directly. Press
 `C-b C-b` to send it: Neovim's page up, Claude Code's "background this task".
+
+## Linux, Windows and macOS
+
+The keys in this guide are the same on all three systems. The differences come
+from the keyboard and from the terminal, which handles some keys itself before
+tmux, Neovim or an agent sees them.
+
+### Modifier keys
+
+| Written | Linux | Windows | macOS |
+| --- | --- | --- | --- |
+| `C-…`, `<C-…>` | <kbd>Ctrl</kbd> | <kbd>Ctrl</kbd> | <kbd>Control</kbd> (⌃), not <kbd>Command</kbd> (⌘) |
+| `M-…`, `<M-…>`, `<A-…>` | <kbd>Alt</kbd> | <kbd>Alt</kbd> | <kbd>Option</kbd> (⌥), once the terminal sends it as Meta (below) |
+| `S-…`, `<S-…>` | <kbd>Shift</kbd> | <kbd>Shift</kbd> | <kbd>Shift</kbd> |
+
+On macOS, <kbd>Command</kbd> shortcuts belong to the terminal app (copy, paste,
+tabs); tmux, Neovim and the agents never receive them.
+
+By default, macOS terminals turn <kbd>Option</kbd> into special characters
+(<kbd>Option</kbd>+<kbd>1</kbd> types `¡`), so the `M-` keys do nothing until
+<kbd>Option</kbd> is set to act as Meta:
+
+- **Terminal:** Settings › Profiles › Keyboard › Use Option as Meta key.
+- **iTerm2:** Settings › Profiles › Keys › General › Left Option key: Esc+.
+- **Ghostty:** `macos-option-as-alt = true` in its config file.
+- **kitty:** `macos_option_as_alt yes` in `kitty.conf`.
+- **WezTerm:** the left <kbd>Option</kbd> key already sends Alt.
+
+### The terminal's own keys
+
+| | Linux (GNOME Terminal) | Windows (Windows Terminal) | macOS |
+| --- | --- | --- | --- |
+| Copy the terminal's selection | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>c</kbd> | <kbd>Ctrl</kbd>+<kbd>c</kbd> (only while text is selected) or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>c</kbd> | <kbd>⌘</kbd>+<kbd>c</kbd> |
+| Paste | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | <kbd>Ctrl</kbd>+<kbd>v</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | <kbd>⌘</kbd>+<kbd>v</kbd> |
+| Select text while tmux or Neovim has the mouse | <kbd>Shift</kbd>+drag | <kbd>Shift</kbd>+drag | Terminal: <kbd>Fn</kbd>+drag; iTerm2: <kbd>Option</kbd>+drag; Ghostty, kitty, WezTerm: <kbd>Shift</kbd>+drag |
+| PgUp, PgDn, Home, End | The keys | The keys | <kbd>Fn</kbd>+<kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd>; in Terminal also hold <kbd>Shift</kbd>, or it scrolls its own window |
+| F1 … F12 | The keys | The keys | <kbd>Fn</kbd>+<kbd>F1</kbd> … unless the F keys are set to act as standard function keys |
+| Full screen | <kbd>F11</kbd> | <kbd>F11</kbd> or <kbd>Alt</kbd>+<kbd>Enter</kbd> | <kbd>⌃</kbd>+<kbd>⌘</kbd>+<kbd>f</kbd> (iTerm2: <kbd>⌘</kbd>+<kbd>Enter</kbd>) |
+
+Text pasted with these keys arrives as a bracketed paste, so a multi-line paste
+into Claude Code or Codex doesn't submit the prompt.
+
+### Keys taken before they arrive
+
+| Key in this guide | Taken by | Use instead |
+| --- | --- | --- |
+| `C-b M-1` … `C-b M-7` (tmux layouts) | GNOME Terminal: <kbd>Alt</kbd>+<kbd>1</kbd> … <kbd>Alt</kbd>+<kbd>0</kbd> switch its tabs | `C-b Space`, or clear them in Preferences › Shortcuts |
+| `<M-Enter>` (new line in Claude Code and Codex) | Windows Terminal and WezTerm, on every system: full screen | `<C-j>`, or <kbd>Shift</kbd>+<kbd>Enter</kbd> |
+| `C-b M-↑` … (resize by 5), fff's `<A-↓>` / `<A-↑>` | Windows Terminal: <kbd>Alt</kbd>+arrows and <kbd>Alt</kbd>+<kbd>Shift</kbd>+arrows move between and resize its own panes | `C-b C-↑` …; in fff, `<C-A-n>` / `<C-A-p>` |
+| `<C-v>` (Neovim block selection, fff's vertical split, tmux's block selection) | Windows Terminal: paste | Neovim's `<C-q>` also starts a block selection; or delete Windows Terminal's <kbd>Ctrl</kbd>+<kbd>v</kbd> binding (Settings › Actions) and paste with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> |
+| `C-b C-↑` … (resize by 1), fff's `<C-↑>` / `<C-↓>` (query history) | macOS: <kbd>⌃</kbd>+arrows switch Mission Control and Spaces | `C-b M-↑` …, or turn them off in System Settings › Keyboard › Keyboard Shortcuts › Mission Control |
+
+### The clipboard
+
+| | Linux (GNOME Terminal) | Windows | macOS |
+| --- | --- | --- | --- |
+| Neovim's `"+y` / `"+p` | Inside tmux, tmux's buffer. The desktop clipboard once `xclip` (X11) or `wl-clipboard` (Wayland) is installed | Native Neovim: the Windows clipboard. In WSL inside tmux: tmux's buffer, and the Windows clipboard through Windows Terminal | The macOS clipboard, inside tmux too |
+| tmux copies (`y`, mouse drag) | tmux's buffer only: GNOME Terminal ignores OSC 52 | In WSL: tmux's buffer and the Windows clipboard | tmux's buffer and the macOS clipboard (`tmux.conf` pipes copies to `pbcopy`) |
+| Paste into an agent's pane | `C-b ]` from tmux's buffer, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> from the desktop | `C-b ]`, or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | `C-b ]`, or <kbd>⌘</kbd>+<kbd>v</kbd> |
+
+### Claude Code and Codex keys
+
+| | Linux (GNOME Terminal) | Windows (Windows Terminal) | macOS |
+| --- | --- | --- | --- |
+| New line in the prompt | `<C-j>` or <kbd>Alt</kbd>+<kbd>Enter</kbd> | `<C-j>` or <kbd>Shift</kbd>+<kbd>Enter</kbd> | `<C-j>`; <kbd>Shift</kbd>+<kbd>Enter</kbd> in Ghostty, iTerm2, kitty and WezTerm; <kbd>Option</kbd>+<kbd>Enter</kbd> once Option acts as Meta, except in WezTerm |
+| Paste an image | <kbd>Ctrl</kbd>+<kbd>v</kbd> | Claude Code: <kbd>Alt</kbd>+<kbd>v</kbd>. Codex: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>v</kbd>, in WSL too | <kbd>Ctrl</kbd>+<kbd>v</kbd> (Claude Code in iTerm2: <kbd>⌘</kbd>+<kbd>v</kbd>) |
+
+Inside tmux, <kbd>Shift</kbd>+<kbd>Enter</kbd> works only if the terminal
+reports it to tmux as a key of its own; if it submits instead, use `<C-j>`.
+
+### tmux on Windows
+
+tmux runs only inside WSL: open the Ubuntu (WSL) profile in Windows Terminal and
+follow the Linux setup there; everything in this guide then applies. To run
+Neovim and the agents on Windows itself, use Windows Terminal's panes instead.
+They close with the window, since there is nothing to detach from.
+
+| Windows Terminal | Does |
+| --- | --- |
+| <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>d</kbd> | Split the pane |
+| <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>-</kbd> / <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>+</kbd> | Split below / to the right |
+| <kbd>Alt</kbd>+arrows | Move to the pane in that direction |
+| <kbd>Alt</kbd>+<kbd>Shift</kbd>+arrows | Resize the pane |
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>w</kbd> | Close the pane |
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>t</kbd>, <kbd>Ctrl</kbd>+<kbd>Tab</kbd> | New tab, next tab |
 
 ## A working layout
 
@@ -182,9 +268,10 @@ double-click copies a word and triple-click a line.
 
 **Clipboard.** Copies land in tmux's buffers. In terminals that support OSC 52
 (Ghostty, kitty, WezTerm, Windows Terminal; iTerm2 once clipboard access is
-allowed in its settings) they also reach the system clipboard. GNOME Terminal
-ignores OSC 52: there, hold <kbd>Shift</kbd> while dragging to make a normal
-terminal selection, and copy it with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>c</kbd>.
+allowed in its settings), and on macOS through `pbcopy`, they also reach the
+system clipboard. GNOME Terminal ignores OSC 52. To bypass tmux and select
+with the terminal itself, see [the terminal's own
+keys](#the-terminals-own-keys).
 
 ### Other tmux keys
 
@@ -300,7 +387,7 @@ Files you open often rank higher.
 | <kbd>Tab</kbd> | Mark a result |
 | `<C-q>` | Send the marked results to the quickfix list |
 | `<S-Tab>` | Grep only: cycle plain / regex / fuzzy / definitions |
-| `<A-↓>` / `<A-↑>` | Grep only: jump to the next / previous file's results |
+| `<A-↓>` / `<A-↑>`, or `<C-A-n>` / `<C-A-p>` | Grep only: jump to the next / previous file's results |
 | `<C-↑>` / `<C-↓>` | Earlier / later queries |
 | <kbd>Esc</kbd> | Close |
 
@@ -461,26 +548,28 @@ any buffer. Inside tmux, a pane is usually simpler.
 
 | | Claude Code | Codex |
 | --- | --- | --- |
-| New line in the prompt | `<C-j>` or `<M-Enter>`; also `\` then <kbd>Enter</kbd> | `<C-j>` or `<M-Enter>` |
+| New line in the prompt | `<C-j>` or `<M-Enter>`; also `\` then <kbd>Enter</kbd> ([per system](#claude-code-and-codex-keys)) | `<C-j>` or `<M-Enter>` |
 | Stop the current turn | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
 | Commands, file mentions, shell | `/`, `@`, `!` at the start | `/`, `@`, `!` at the start |
 | Edit the prompt in an editor | `<C-g>` | `<C-g>` |
 | Search prompt history | `<C-r>` | `<C-r>` |
 | Change mode | `<S-Tab>` cycles permission modes and plan mode | `<S-Tab>` |
 | Full transcript | `<C-o>` | `<C-t>` |
-| Paste an image | `<C-v>` | `<C-v>` |
+| Paste an image | `<C-v>` (Windows: `<M-v>`) | `<C-v>` (Windows and WSL: `<C-M-v>`) |
 | Show all shortcuts | `?` on an empty prompt | `?` on an empty prompt |
 | Quit | `<C-c>` twice, or `<C-d>` twice | `<C-c>` on an empty prompt |
 
 - **Shift+Enter** also makes a new line, but only in terminals that report it as
-  a separate key. GNOME Terminal doesn't; use `<C-j>` or `<M-Enter>` there.
+  a separate key, which GNOME Terminal doesn't. `<M-Enter>` is full screen in
+  Windows Terminal and WezTerm. `<C-j>` works everywhere.
 - **Claude Code's `<C-b>`** (move a running task to the background) is `C-b C-b`
   inside tmux.
 - **Scrolling.** Claude Code prints into the pane, so scroll it with tmux: the
   wheel or `C-b [`. Codex draws its own full-screen view: `<C-t>` opens its
   transcript, where `PgUp`/`PgDn` scroll and `F3` searches.
-- **Copying out.** In GNOME Terminal, <kbd>Shift</kbd>+drag selects across the
-  agent's output and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>c</kbd> copies.
+- **Copying out.** Select with the terminal itself (<kbd>Shift</kbd>+drag on
+  Linux and Windows; see [the terminal's own keys](#the-terminals-own-keys) for
+  macOS) and copy with the terminal's copy key, or use tmux copy mode.
 - **`<C-g>` opens `$EDITOR`.** Add `export EDITOR=nvim` to `~/.bashrc` to write
   long prompts in Neovim: save and quit (`:wq`) to hand the text back.
 
@@ -489,17 +578,17 @@ any buffer. Inside tmux, a pane is usually simpler.
 - **Two kinds of split.** Neovim's `<C-w>h`/`l` move between its own windows;
   tmux's `C-b ←`/`→` move between panes. `C-b z` zooms Neovim to the full screen while
   you read, and the same keys zoom back.
-- **Code into a prompt.** In Neovim, select the lines and press `"+y`. Inside tmux
-  that copy goes to tmux's buffer, so `C-b ;` (to the agent's pane) and `C-b ]`
-  paste it, newlines intact. Shorter still: type `@path/to/file` in the prompt
-  and the agent reads the file itself.
+- **Code into a prompt.** In Neovim, select the lines and press `"+y`, then
+  `C-b ;` to the agent's pane. On Linux without `xclip` and in WSL, paste with
+  `C-b ]` (tmux's buffer); on macOS, or once `xclip` is installed, with the
+  terminal's paste key. Either way the newlines stay intact. Shorter still: type
+  `@path/to/file` in the prompt and the agent reads the file itself.
 - **A file an agent mentions.** In Neovim, `<leader>f` and paste or type part of
   its path; for `file.cc:120`, open it and type `120G`.
 - **Agent output into Neovim.** `C-b [` in the agent's pane, select with `v` and
-  copy with `y`. Back in Neovim, `"+p` pastes it: inside tmux, Neovim's `"+`
-  register is tmux's buffer.
-- **The desktop clipboard.** On this Linux setup, nothing in tmux or Neovim
-  reaches the desktop clipboard by itself. Installing `xclip`
-  (`sudo apt install xclip`) makes Neovim's `"+y` and `"+p` use it instead of
-  tmux's buffer; then paste into an agent's pane with
-  <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> rather than `C-b ]`.
+  copy with `y`. Back in Neovim, `"+p` pastes it: tmux's copy and Neovim's `"+`
+  register are the same buffer (or, on macOS, the same clipboard).
+- **The desktop clipboard on Linux.** Out of the box, nothing in tmux or Neovim
+  reaches it under GNOME Terminal. `sudo apt install xclip` connects Neovim's
+  `"+` register to it; [the clipboard table](#the-clipboard) has the details for
+  each system.

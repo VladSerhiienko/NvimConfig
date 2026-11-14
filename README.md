@@ -203,8 +203,9 @@ copy mode (`v` selects, `y` copies), the terminal title from the active pane,
 and new windows and splits in the current directory. The prefix stays
 <kbd>Ctrl-b</kbd>; reload with `tmux source ~/.config/tmux/tmux.conf`.
 
-- **Newline in Claude Code or Codex:** <kbd>Ctrl-j</kbd> or <kbd>Alt-Enter</kbd>
-  works in every terminal.
+- **Newline in Claude Code or Codex:** <kbd>Ctrl-j</kbd> works in every terminal.
+  So does <kbd>Alt-Enter</kbd>, except in Windows Terminal and WezTerm (where it
+  is full screen) and on macOS until Option is set to act as Meta.
   <kbd>Shift-Enter</kbd> works only if the terminal reports it to tmux as a
   different key from Enter (xterm's modifyOtherKeys), which GNOME Terminal
   doesn't. Codex doesn't ask tmux for extended keys, so a binding hands it
@@ -213,7 +214,10 @@ and new windows and splits in the current directory. The prefix stays
 - **Selecting text in GNOME Terminal:** tmux takes the mouse, so hold
   <kbd>Shift</kbd> while dragging to select, then copy with <kbd>Ctrl-Shift-c</kbd>.
   GNOME Terminal ignores OSC 52, so copies made in tmux and Neovim's `"+`
-  register stay inside tmux there.
+  register stay inside tmux there. On macOS, tmux copies also go through
+  `pbcopy`.
+- **Other systems and terminals:** [GUIDE.md](GUIDE.md#linux-windows-and-macos)
+  lists the keys per system, and the ones terminals take for themselves.
 
 ## Project details handled automatically
 
