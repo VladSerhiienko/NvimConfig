@@ -196,11 +196,23 @@ Link the config where tmux looks for it:
 mkdir -p ~/.config/tmux && ln -s ~/.config/nvim/tmux.conf ~/.config/tmux/tmux.conf
 ```
 
-It needs tmux 3.6 or later. Beyond tmux's defaults, it turns on focus events
-(Neovim's autoread, Claude Code's notifications), extended keys, passthrough for
-desktop notifications and OSC 52 copying, a 50,000-line scrollback, vi keys in
-copy mode (`v` selects, `y` copies), the terminal title from the active pane,
-and new windows and splits in the current directory. The prefix stays
+`install-linux.sh` also installs two tmux plugins, tmux-resurrect and
+tmux-continuum. Elsewhere (macOS, or Linux without the script), clone them at
+the same commits:
+
+```sh
+d=~/.local/share/tmux/plugins
+git clone https://github.com/tmux-plugins/tmux-resurrect $d/tmux-resurrect && git -C $d/tmux-resurrect checkout -q cff343c
+git clone https://github.com/tmux-plugins/tmux-continuum $d/tmux-continuum && git -C $d/tmux-continuum checkout -q 0698e8f
+```
+
+The config needs tmux 3.6 or later. Beyond tmux's defaults, it turns on focus
+events (Neovim's autoread, Claude Code's notifications), extended keys,
+passthrough for desktop notifications and OSC 52 copying, a 50,000-line
+scrollback, vi keys in copy mode (`v` selects, `y` copies), the terminal title
+from the active pane, new windows and splits in the current directory, and, with
+the plugins, sessions that come back after a reboot (saved every 15 minutes,
+restored when tmux starts; see [GUIDE.md](GUIDE.md#sessions)). The prefix stays
 <kbd>Ctrl-b</kbd>; reload with `tmux source ~/.config/tmux/tmux.conf`.
 
 - **Newline in Claude Code or Codex:** <kbd>Ctrl-j</kbd> works in every terminal.

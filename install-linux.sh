@@ -8,12 +8,15 @@
 #
 # Rust (rust-analyzer) is not installed here; see README.md. The Nerd Font goes to
 # ~/.local/share/fonts; NERD_FONT picks the family (https://www.nerdfonts.com/font-downloads).
+# tmux plugins go to ~/.local/share/tmux/plugins, where tmux.conf looks for them.
 
 set -eu
 
 NVIM=0.12.6
 TREESITTER=0.27.2
 TMUX_VERSION=3.8
+TMUX_RESURRECT=cff343cf9e81983d3da0c8562b01616f12e8d548 # master on 2023-03-06 (v4.0.0 is older)
+TMUX_CONTINUUM=0698e8f4b17d6454c71bf5212895ec055c578da0 # master on 2024-01-20 (v3.1.0 is older)
 CLANGD=22.1.1
 TY=0.0.101
 SLANG=2026.22
@@ -76,6 +79,16 @@ rm -rf "$O/tmux-$TMUX_VERSION" && mkdir -p "$O/tmux-$TMUX_VERSION"
 tar xzf "$T/tmux.tar.gz" -C "$O/tmux-$TMUX_VERSION"
 link "$O/tmux-$TMUX_VERSION/tmux" tmux
 
+# tmux-resurrect and tmux-continuum bring tmux sessions back after a reboot.
+P=${XDG_DATA_HOME:-$HOME/.local/share}/tmux/plugins
+for p in tmux-resurrect=$TMUX_RESURRECT tmux-continuum=$TMUX_CONTINUUM; do
+  name=${p%=*} rev=${p#*=}
+  echo "$name $rev"
+  get $name.tar.gz $GH/tmux-plugins/$name/archive/$rev.tar.gz
+  rm -rf "$P/$name" && mkdir -p "$P/$name"
+  tar xzf "$T/$name.tar.gz" -C "$P/$name" --strip-components=1
+done
+
 # clangd's own GitHub releases are x86_64 only; the PyPI wheel also has aarch64. The binary
 # finds its builtin headers relative to itself, so bin/ and lib/ stay together.
 echo "clangd $CLANGD"
@@ -127,6 +140,7 @@ for t in nvim tree-sitter tmux clangd ty slangd glsl_analyzer wgsl-analyzer; do
   printf '%-14s -> %s\n' "$t" "$(readlink "$B/$t")"
 done
 printf '%-14s -> %s\n' fonts "$F"
+printf '%-14s -> %s\n' 'tmux plugins' "$P"
 case ":$PATH:" in
   *":$B:"*) ;;
   *) echo; echo "Add $B to PATH, e.g. in ~/.profile: export PATH=\"$B:\$PATH\"" ;;

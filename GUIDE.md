@@ -169,6 +169,31 @@ Inside tmux:
 | `C-b L` | Last session |
 | `C-b $` | Rename the session |
 
+**Closed terminals and reboots.** Closing the terminal, or losing an SSH
+connection, only detaches: everything keeps running, and `tmux a` brings it
+back. A reboot ends tmux, so `tmux.conf` keeps a copy: while a terminal is
+attached, the sessions are saved every 15 minutes, and the first tmux started
+after the reboot restores the last save.
+
+| Key | Does |
+| --- | --- |
+| `C-b C-s` | Save the sessions now |
+| `C-b C-r` | Restore the last save |
+
+What comes back:
+
+- Sessions, windows, splits, and each pane's directory.
+- Neovim, with the same files open. Edits not yet saved can be recovered from
+  the swap file when Neovim asks.
+- Claude Code as `claude --continue` and Codex as `codex resume --last`: each
+  resumes the latest conversation in its directory, without the flags it was
+  started with. Two agents of the same kind in one directory resume the same
+  conversation; `claude --resume` or `codex resume` picks another.
+- In other panes, a shell.
+
+To start tmux once without restoring, create `~/tmux_no_auto_restore` and delete
+it afterwards. Saves are kept in `~/.local/share/tmux/resurrect`.
+
 ### Windows
 
 | Key | Does |
