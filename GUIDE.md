@@ -168,19 +168,15 @@ Inside tmux:
 | `C-b (` / `C-b )` | Previous / next session |
 | `C-b L` | Last session |
 | `C-b $` | Rename the session |
+| `C-b C-s` | Save the sessions now |
+| `C-b C-r` | Restore the last save |
 
 **Closed terminals and reboots.** Closing the terminal, or losing an SSH
 connection, only detaches: everything keeps running, and `tmux a` brings it
 back. A reboot ends tmux, so `tmux.conf` keeps a copy: while a terminal is
-attached, the sessions are saved every 15 minutes, and the first tmux started
-after the reboot restores the last save.
-
-| Key | Does |
-| --- | --- |
-| `C-b C-s` | Save the sessions now |
-| `C-b C-r` | Restore the last save |
-
-What comes back:
+attached, the sessions are saved every 15 minutes (`C-b C-s` saves at once), and
+the first tmux started after the reboot restores the last save (`C-b C-r` does
+it by hand). What comes back:
 
 - Sessions, windows, splits, and each pane's directory.
 - Neovim, with the same files open. Edits not yet saved can be recovered from
@@ -229,7 +225,7 @@ it afterwards. Saves are kept in `~/.local/share/tmux/resurrect`.
 | `C-b E` | Spread the panes out evenly |
 | `C-b C-↑` … / `C-b M-↑` … | Resize by 1 / by 5 cells |
 | `C-b T` | Set the pane's title |
-| Mouse | Click a pane to focus it, drag a border to resize, <kbd>Alt</kbd>+drag a pane to move it |
+| Mouse | Click a pane to focus it, drag a border to resize |
 
 Splits (`C-b %`, `C-b "`) and new windows (`C-b c`) start in the current pane's
 directory, so a split next to Neovim opens a shell in the project.
@@ -254,6 +250,7 @@ tmux 3.8 can float panes over the tiled ones.
 | `C-b g` then `1` … `4` | Move it to a corner; `M-1` … `M-4` also make it a quarter of the window |
 | `C-b g` then `0` | Fill the window |
 | <kbd>Ctrl</kbd>+drag | Draw a new floating pane with the mouse |
+| <kbd>Alt</kbd>+drag | Move a floating pane with the mouse |
 
 ### Copy mode and scrollback
 
@@ -353,8 +350,8 @@ the running server.
 | `<C-e>` / `<C-y>` | Scroll one line without moving the cursor |
 | `zz` / `zt` / `zb` | Put the cursor line in the middle / top / bottom of the window |
 
-The mouse works too: click to place the cursor, scroll with the wheel, drag a
-window border to resize.
+The mouse works too: click to place the cursor, scroll with the wheel, drag to
+select (<kbd>Alt</kbd>+drag selects a block), drag a window border to resize.
 
 ### Search and replace
 
@@ -600,6 +597,14 @@ any buffer. Inside tmux, a pane is usually simpler.
 
 ## Between Neovim, tmux and the agents
 
+- **Who gets which key.** tmux acts only on keys typed after `C-b`, so Neovim
+  and the agents get every other key. The one they don't get directly is
+  <kbd>Ctrl</kbd>+<kbd>b</kbd> itself: send it with `C-b C-b`.
+  <kbd>Shift</kbd>+<kbd>Enter</kbd> passes through too (to Codex in the form it
+  reads). With the mouse, a program that uses it (Neovim, Codex) gets clicks,
+  drags and the wheel; tmux keeps <kbd>Ctrl</kbd>+drag (a new floating pane),
+  <kbd>Alt</kbd>+right-click (its pane menu) and <kbd>Alt</kbd>+drag on a
+  floating pane (moves it).
 - **Two kinds of split.** Neovim's `<C-w>h`/`l` move between its own windows;
   tmux's `C-b ←`/`→` move between panes. `C-b z` zooms Neovim to the full screen while
   you read, and the same keys zoom back.
