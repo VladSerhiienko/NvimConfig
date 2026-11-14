@@ -17,7 +17,8 @@ in `nvim-pack-lock.json`. Completion is built in too: `'autocomplete'` is fed by
 the language server through `omnifunc`.
 
 `tmux.conf` sets up tmux for running Neovim next to Claude Code or Codex (see
-[tmux](#tmux)).
+[tmux](#tmux)). [GUIDE.md](GUIDE.md) is a guide to the keys of Neovim, tmux and
+both agents.
 
 ## What to install
 
@@ -196,13 +197,14 @@ mkdir -p ~/.config/tmux && ln -s ~/.config/nvim/tmux.conf ~/.config/tmux/tmux.co
 ```
 
 It needs tmux 3.6 or later. Beyond tmux's defaults, it turns on focus events
-(Neovim's autoread, Claude Code's notifications), extended keys, passthrough
-for desktop notifications and OSC 52 copying, a 50,000-line scrollback, vi keys in
-copy mode, the terminal title from the active pane, and new windows and splits
-in the current directory. The prefix stays <kbd>Ctrl-b</kbd>; reload with
-`tmux source ~/.config/tmux/tmux.conf`.
+(Neovim's autoread, Claude Code's notifications), extended keys, passthrough for
+desktop notifications and OSC 52 copying, a 50,000-line scrollback, vi keys in
+copy mode (`v` selects, `y` copies), the terminal title from the active pane,
+and new windows and splits in the current directory. The prefix stays
+<kbd>Ctrl-b</kbd>; reload with `tmux source ~/.config/tmux/tmux.conf`.
 
-- **Newline in Claude Code or Codex:** <kbd>Ctrl-j</kbd> works in every terminal.
+- **Newline in Claude Code or Codex:** <kbd>Ctrl-j</kbd> or <kbd>Alt-Enter</kbd>
+  works in every terminal.
   <kbd>Shift-Enter</kbd> works only if the terminal reports it to tmux as a
   different key from Enter (xterm's modifyOtherKeys), which GNOME Terminal
   doesn't. Codex doesn't ask tmux for extended keys, so a binding hands it
@@ -252,7 +254,8 @@ vim.lsp.config('slangd', { settings = { slang = {
 
 ## Keys
 
-Leader is <kbd>Space</kbd>.
+Leader is <kbd>Space</kbd>. These are the keys this config adds or changes;
+[GUIDE.md](GUIDE.md) covers Neovim's built-in keys and tmux as well.
 
 | Key | Action |
 | --- | --- |
