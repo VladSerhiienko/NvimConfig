@@ -1,7 +1,7 @@
 # NvimConfig
 
 A minimal Neovim setup for C++, CUDA, Objective-C/C++, Metal, Python, Rust, and
-the shading languages (Slang, HLSL, GLSL, WGSL). It's one `init.lua` with five
+the shading languages (Slang, HLSL, GLSL, WGSL). It's one `init.lua` with six
 plugins:
 
 | Plugin | Job |
@@ -11,6 +11,7 @@ plugins:
 | [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Server defaults for Neovim's built-in LSP client (`vim.lsp.enable`). |
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | Colorscheme with tree-sitter and semantic-token groups. |
 | [mini.icons](https://github.com/nvim-mini/mini.icons) | Nerd Font icons for fff's file list and the completion menu's item kinds. |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Marks the lines changed since the last commit, previews, reverts and stages them, and reviews every changed file side by side. |
 
 Plugins are managed by the built-in `vim.pack`. Their exact revisions are pinned
 in `nvim-pack-lock.json`. Completion is built in too: `'autocomplete'` is fed by
@@ -27,7 +28,7 @@ The plugins install themselves. Everything else comes from outside Neovim:
 | Tool | Used for | |
 | --- | --- | --- |
 | Neovim 0.12+ | | required |
-| `git` | `vim.pack` clones the plugins | required |
+| `git` | `vim.pack` clones the plugins; gitsigns reads the changes | required |
 | `curl`, `tar` | fff's binary download, parser sources | required |
 | C compiler | building the tree-sitter parsers | for highlighting |
 | [`tree-sitter` CLI](https://github.com/tree-sitter/tree-sitter/releases) 0.26.1+ | building the parsers (don't install it from npm) | for highlighting |
@@ -282,6 +283,12 @@ Leader is <kbd>Space</kbd>. These are the keys this config adds or changes;
 | `<leader>b` | `:buffer ` with fuzzy completion |
 | `<leader>s` | Workspace symbols (LSP) |
 | `<leader>h` | Switch header/source (clangd) |
+| `]c` / `[c` | Next / previous change since the last commit (gitsigns) |
+| `<leader>cp` `<leader>cr` `<leader>cs` | Preview / revert / stage (or unstage) the change; `cr` and `cs` also take a visual selection |
+| `<leader>cb` | Blame the line |
+| `<leader>cd` | Review every changed file side by side |
+| `<leader>cq` | Every change in the repository into quickfix |
+| `ic` | Text object for the change (`dic`, `yic`, `vic`) |
 | `gd` / `gD` | Definition / declaration; `gd` greps the word when no server finds a definition (Metal, HLSL slangd can't parse) |
 | `<C-]>` / `<C-t>` | Definition through the tag stack / jump back |
 | `K` | Hover |

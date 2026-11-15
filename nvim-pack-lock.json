@@ -4,6 +4,10 @@
       "rev": "5d95b054804577b24790673387a00ca71f5a355e",
       "src": "https://github.com/dmtrKovalenko/fff"
     },
+    "gitsigns.nvim": {
+      "rev": "dc7698f932792a764d3db95fedee26c38e728355",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
     "mini.icons": {
       "rev": "fc90b3925a2a68282be06e28cfe0cbb366c75dad",
       "src": "https://github.com/nvim-mini/mini.icons"

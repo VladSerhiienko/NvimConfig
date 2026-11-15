@@ -14,9 +14,9 @@ and Codex next to them. The keys below were checked against tmux 3.8, Neovim
   [search](#search-and-replace), [jumps](#jumps-and-marks),
   [files](#files-and-buffers), [fff picker](#the-fff-picker),
   [project search](#searching-the-project), [code navigation](#code-navigation-lsp),
-  [diagnostics](#diagnostics), [completion](#completion), [editing](#editing),
-  [windows and tabs](#windows-and-tabs), [command line](#command-line),
-  [terminal](#terminal-inside-neovim)
+  [diagnostics](#diagnostics), [git changes](#git-changes), [completion](#completion),
+  [editing](#editing), [windows and tabs](#windows-and-tabs),
+  [command line](#command-line), [terminal](#terminal-inside-neovim)
 - [Claude Code and Codex](#claude-code-and-codex)
 - [Between Neovim, tmux and the agents](#between-neovim-tmux-and-the-agents)
 
@@ -476,6 +476,32 @@ Errors and warnings show at the end of their line, with an underline.
 | `<C-w>d` | Show the full message in a popup |
 | `:lua vim.diagnostic.setqflist()` | All diagnostics into the quickfix list |
 
+### Git changes
+
+Lines changed since the last commit are marked left of the line numbers: `┃`
+for added and changed lines, `▁` or `▔` where lines were deleted. Staged changes
+keep their mark in a dimmer color. On a line with an error or warning, the
+diagnostic's letter takes that spot, but `]c` still stops there. When an agent
+rewrites a file you have open, Neovim reloads it as soon as you come back to its
+pane, and the marks show what changed.
+
+| Key | Does |
+| --- | --- |
+| `]c` / `[c` | Next / previous change (in a diff window: next / previous difference) |
+| `<leader>cp` | Preview the change: old and new lines in a popup |
+| `<leader>cr` | Revert the change to the committed (or staged) lines. In Visual mode, only the selected lines |
+| `<leader>cs` | Stage the change for the next commit; on a staged change, unstage it. In Visual mode, stage the selected lines |
+| `<leader>cb` | Who last changed this line, and the commit message |
+| `dic` / `yic` / `vic` | Delete / copy / select the changed lines (`ic` works after any operator) |
+| `<leader>cd` | Review every changed file: a file list in a new tab, with side-by-side diffs |
+| `<leader>cq` | Every change in the repository into the quickfix list |
+| `:Gitsigns diff HEAD~3` | Review everything since three commits ago (any revision, or a range `A..B`) |
+
+In the review tab, <kbd>Enter</kbd> on a file opens its diff, with the file
+itself on the right, where you can edit it. `]f` / `[f` go to the next / previous
+file, `s` / `u` stage / unstage the file under the cursor, `gu` shows deleted
+lines inline instead of side by side, `g?` lists the keys, and `q` closes the tab.
+
 ### Completion
 
 The menu opens by itself while you type in a buffer with a language server.
@@ -605,6 +631,11 @@ any buffer. Inside tmux, a pane is usually simpler.
   drags and the wheel; tmux keeps <kbd>Ctrl</kbd>+drag (a new floating pane),
   <kbd>Alt</kbd>+right-click (its pane menu) and <kbd>Alt</kbd>+drag on a
   floating pane (moves it).
+- **What an agent changed.** Its edits show up as marks in Neovim (see
+  [Git changes](#git-changes)). `<leader>cd` lists every changed file with
+  side-by-side diffs. In a file, `]c` steps through the changes, `<leader>cp`
+  shows one, `<leader>cr` undoes it, and `<leader>cs` stages it. Staging what
+  you have reviewed leaves `git diff` showing only what you haven't.
 - **Two kinds of split.** Neovim's `<C-w>h`/`l` move between its own windows;
   tmux's `C-b ←`/`→` move between panes. `C-b z` zooms Neovim to the full screen while
   you read, and the same keys zoom back.

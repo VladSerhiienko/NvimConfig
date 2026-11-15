@@ -4,6 +4,7 @@
 --   Highlighting    tree-sitter parsers from nvim-treesitter, started per buffer
 --   Definitions     built-in LSP client; servers are enabled only when installed
 --   Completion      built-in 'autocomplete' fed by the LSP
+--   Git changes     gitsigns: changed lines marked, then previewed, reverted or staged
 --
 -- External tools are listed in README.md.
 
@@ -96,6 +97,7 @@ vim.pack.add({
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
   'https://github.com/dmtrKovalenko/fff',
   'https://github.com/nvim-mini/mini.icons',
+  'https://github.com/lewis6991/gitsigns.nvim',
 }, { confirm = false })
 
 pcall(vim.cmd.colorscheme, 'tokyonight-night')
@@ -281,6 +283,54 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
   end,
 })
+
+-- Git -------------------------------------------------------------------------
+
+-- Lines changed since the last commit are marked in the sign column. The keys below act
+-- on the change (hunk) under the cursor; they all start with <leader>c because <leader>h
+-- is taken by clangd. Files an agent rewrites reload when Neovim gets focus back, and
+-- their marks follow.
+local gitsigns = require('gitsigns')
+gitsigns.setup({
+  on_attach = function(buf)
+    local function bmap(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc })
+    end
+    -- In diff mode ]c and [c keep their built-in meaning.
+    bmap('n', ']c', function()
+      if vim.wo.diff then
+        return vim.cmd.normal({ ']c', bang = true })
+      end
+      gitsigns.nav_hunk('next')
+    end, 'Next change')
+    bmap('n', '[c', function()
+      if vim.wo.diff then
+        return vim.cmd.normal({ '[c', bang = true })
+      end
+      gitsigns.nav_hunk('prev')
+    end, 'Previous change')
+    local function lines()
+      return { vim.fn.line('.'), vim.fn.line('v') }
+    end
+    bmap('n', '<leader>cp', gitsigns.preview_hunk, 'Preview the change')
+    bmap('n', '<leader>cr', gitsigns.reset_hunk, 'Revert the change')
+    bmap('x', '<leader>cr', function()
+      gitsigns.reset_hunk(lines())
+    end, 'Revert the selected lines')
+    bmap('n', '<leader>cs', gitsigns.stage_hunk, 'Stage the change, or unstage a staged one')
+    bmap('x', '<leader>cs', function()
+      gitsigns.stage_hunk(lines())
+    end, 'Stage the selected lines')
+    bmap('n', '<leader>cb', function()
+      gitsigns.blame_line({ full = true })
+    end, 'Blame this line')
+    bmap({ 'o', 'x' }, 'ic', gitsigns.select_hunk, 'Inside the change')
+  end,
+})
+vim.keymap.set('n', '<leader>cd', '<Cmd>Gitsigns diff<CR>', { desc = 'Review all changes since the last commit' })
+vim.keymap.set('n', '<leader>cq', function()
+  gitsigns.setqflist('all')
+end, { desc = 'All changes into the quickfix list' })
 
 -- Keymaps ---------------------------------------------------------------------
 -- Built in with an LSP attached: K hover, grn rename, gra code action, grr references,
